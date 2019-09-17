@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Geovey Space">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="http://geovey.github.io//http://news.mydrivers.com/Img/20120207/2012020702334247.jpg">
+    <meta property="twitter:image" content="http://geovey.github.io//http://news.mydrivers.com/Img/20120207/2012020702334247.jpg" />
+    
+
+    
+    <meta name="title" content="MapWinGIS增加鼠标对外接口" />
+    <meta property="og:title" content="MapWinGIS增加鼠标对外接口" />
+    <meta property="twitter:title" content="MapWinGIS增加鼠标对外接口" />
+    
+
+    
+    <meta name="description" content="MapWinGIS自带的控件只有MouseDown、MouseUp和MouseMove三个鼠标对外事件，本文讲解如何增加鼠标滚轮对外事件接口MouseWheel。">
+    <meta property="og:description" content="MapWinGIS自带的控件只有MouseDown、MouseUp和MouseMove三个鼠标对外事件，本文讲解如何增加鼠标滚轮对外事件接口MouseWheel。" />
+    <meta property="twitter:description" content="MapWinGIS自带的控件只有MouseDown、MouseUp和MouseMove三个鼠标对外事件，本文讲解如何增加鼠标滚轮对外事件接口MouseWheel。" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="陈超, chenchao, chaoshu, , 刘雄, 李亚泽, 久违空间, geovey, geovey space, 久违, gamit, gnss, 北斗, 北斗卫星导航, 监测, 测绘, 无人机">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>MapWinGIS增加鼠标对外接口-久违空间</title>
+
+    <link rel="canonical" href="/2019-09-16-MapWinGIS%20Adding%20Mouse%20External%20Interface">
+
+    <link rel="stylesheet" href="/css/iDisqus.min.css"/>
+	
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    
+    <link rel="stylesheet" href="/css/syntax.css">
+    
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+    
+    
+    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    
+    
+
+    
+    
+    <script src="/js/jquery.min.js"></script>
+    
+    
+    <script src="/js/bootstrap.min.js"></script>
+    
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/docco.min.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    
+    
+
+</head>
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Geovey Space</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/categories/long-gis">LONG-GIS</a>
+                    </li>
+                    
+                    
+		    
+                        <li><a href="/top/books/">Long-GIS</a></li>
+                    
+                        <li><a href="/top/about/">BDS/IoT</a></li>
+                    
+                        <li><a href="/top/books/">GAMIT/GLOBK</a></li>
+                    
+                        <li><a href="/top/about/">Monitor</a></li>
+                    
+                        <li><a href="/top/about/">Geomatics</a></li>
+                    
+
+                    
+		    <li>
+                        <a href="/search">SEARCH <img src="/img/search.png" height="15" style="cursor: pointer;" alt="Search"></a>
+		    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('http://news.mydrivers.com/Img/20120207/2012020702334247.jpg')
+    }
+</style>
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/microservice" title="Microservice">
+                            Microservice
+                        </a>
+                        
+                        <a class="tag" href="/tags/security" title="Security">
+                            Security
+                        </a>
+                        
+                    </div>
+                    <h1>MapWinGIS增加鼠标对外接口</h1>
+                    <h2 class="subheading">MapWinGIS深度开发基础</h2>
+                    <span class="meta">
+                        Posted by 
+                        
+                            陈超
+                         
+                        on 
+                        Monday, September 16, 2019
+                        
+                        
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <header>
+                    <h2>TOC</h2>
+                </header>
+                <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#1-dispids-h文件中增加ids">1、DispIds.h文件中增加IDs</a></li>
+<li><a href="#2-map-h文件中触发事件">2、map.h文件中触发事件</a></li>
+<li><a href="#3-map-cpp中增加event-custom-id">3、map.cpp中增加EVENT_CUSTOM_ID</a></li>
+<li><a href="#4-idl文件中增加对外接口">4、IDL文件中增加对外接口</a></li>
+<li><a href="#5-触发mousewheel外部联动操作">5、触发MouseWheel外部联动操作</a></li>
+</ul></li>
+</ul>
+</nav>
+                
+                
+
+<p>MapWinGIS自带的控件只有MouseDown、MouseUp和MouseMove三个鼠标对外事件，本文讲解如何增加鼠标滚轮对外事件接口MouseWheel</p>
+
+<h2 id="1-dispids-h文件中增加ids">1、DispIds.h文件中增加IDs</h2>
+
+<p>DispIds.h是ActiveX(ocx)控件的调度和事件ID号文件（Dispatch and event IDs），在里面增加MouseWheel的事件ID；</p>
+
+<pre><code class="language-c++">    // events
+    eventidMouseDown = 1L,
+    eventidMouseUp = 2L,
+    eventidMouseMove = 3L,
+    eventidMouseWheel = 520L,  // 增加的MouseWheel的事件ID
+</code></pre>
+
+<h2 id="2-map-h文件中触发事件">2、map.h文件中触发事件</h2>
+
+<pre><code class="language-c++">    // Event maps
+    //{{AFX_EVENT(CMapView)
+        // NOTE - ClassWizard will add and remove member functions here.
+        // DO NOT EDIT what you see in these blocks of generated code !
+    void FireMouseDown(short Button, short Shift, long x, long y)
+        {FireEvent(eventidMouseDown,EVENT_PARAM(VTS_I2  VTS_I2  VTS_I4  VTS_I4), Button, Shift, x, y);}
+    void FireMouseUp(short Button, short Shift, long x, long y)
+        {FireEvent(eventidMouseUp,EVENT_PARAM(VTS_I2  VTS_I2  VTS_I4  VTS_I4), Button, Shift, x, y);}
+    void FireMouseMove(short Button, short Shift, long x, long y)
+        {FireEvent(eventidMouseMove,EVENT_PARAM(VTS_I2  VTS_I2  VTS_I4  VTS_I4), Button, Shift, x, y);}
+    //--------------chenchao----------------
+    void FireMouseWheel(short Button, short zDelta, short Shift, long x, long y)
+    {
+        FireEvent(eventidMouseWheel,EVENT_PARAM(VTS_I2  VTS_I2  VTS_I2  VTS_I4  VTS_I4), Button, zDelta, Shift, x, y);
+    }
+    //--------------chenchao----------------
+</code></pre>
+
+<h2 id="3-map-cpp中增加event-custom-id">3、map.cpp中增加EVENT_CUSTOM_ID</h2>
+
+<pre><code class="language-c++">BEGIN_EVENT_MAP(CMapView, COleControl)
+    //{{AFX_EVENT_MAP(CMapView)
+    // NOTE - ClassWizard will add and remove event map entries
+    // DO NOT EDIT what you see in these blocks of generated code !
+    EVENT_CUSTOM_ID(&quot;MouseDown&quot;, eventidMouseDown, FireMouseDown, VTS_I2  VTS_I2  VTS_I4  VTS_I4)
+    EVENT_CUSTOM_ID(&quot;MouseUp&quot;, eventidMouseUp, FireMouseUp, VTS_I2  VTS_I2  VTS_I4  VTS_I4)
+    EVENT_CUSTOM_ID(&quot;MouseMove&quot;, eventidMouseMove, FireMouseMove, VTS_I2  VTS_I2  VTS_I4  VTS_I4)
+    EVENT_CUSTOM_ID(&quot;MouseWheel&quot;, eventidMouseWheel, FireMouseWheel, VTS_I2  VTS_I2  VTS_I2  VTS_I4  VTS_I4)
+    ···
+END_EVENT_MAP()
+</code></pre>
+
+<h2 id="4-idl文件中增加对外接口">4、IDL文件中增加对外接口</h2>
+
+<p>MapWinGIS.idl文件是一个接口文件（Interface definition file），用户通过这个文件里面的定义的接口访问控件操作；</p>
+
+<pre><code class="language-c++">// Event dispatch interface for CMap
+[ uuid(ABEA1545-08AB-4D5C-A594-D3017211EA95),
+helpstring(&quot;Event interface for Map Control&quot;) ]
+dispinterface _DMapEvents
+{
+    properties:
+    //  Event interface has no properties
+    methods:
+    // NOTE - ClassWizard will maintain event information here.
+    // Use extreme caution when editing this section.
+    //{{AFX_ODL_EVENT(CMapView)
+    [id(DISPID_DBLCLICK)] void DblClick(void);
+    [id(1)] void MouseDown(short Button, short Shift, long x, long y);
+    [id(2)] void MouseUp(short Button, short Shift, long x, long y);
+    [id(3)] void MouseMove(short Button, short Shift, long x, long y);
+    [id(520)] void MouseWheel(short Button, short zDelta, short Shift, long x, long y); //外面控件事件接口
+    ...
+};
+</code></pre>
+
+<h2 id="5-触发mousewheel外部联动操作">5、触发MouseWheel外部联动操作</h2>
+
+<p>在需要触发MouseWheel进行外部联动操作的时候，调用FireMouseWheel，比如，在map_event.cpp中的OnMouseWheel中调用：</p>
+
+<pre><code class="language-c++">#pragma region Mouse wheel
+//***************************************************************
+//      OnMouseWheel()                             
+//***************************************************************
+// Processing mouse wheel event. Amount of zoom is determined by MouseWheelsSpeed parameter
+BOOL CMapView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
+{
+    if (_mouseWheelSpeed &lt; 0.1 || _mouseWheelSpeed &gt; 10)
+        _mouseWheelSpeed = 1;
+    if (_mouseWheelSpeed == 1) return FALSE;
+    long x = pt.x;
+    long y = pt.y - 1;
+    long mbutton = ParseMouseEventFlags(nFlags);
+    long vbflags = ParseKeyboardEventFlags(nFlags);
+    this-&gt;FireMouseWheel(mbutton,zDelta, (short)vbflags, x, y);//触发事件，跳到外部事件MouseWheelMap1
+    ...
+    return true;
+}
+</code></pre>
+
+
+                
+                
+<div class="entry-shang text-center">
+    
+	    <p> 「如果这篇文章对你有用,请随意打赏」</p>
+	
+	<button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+	<div class="zs-modal-head">
+		<button type="button" class="close">×</button>
+		<span class="author"><a href="http://geovey.github.io/"><img src="/img/favicon.png" />Geovey Space</a></span>
+        
+	        <p class="tip"><i></i><span>如果这篇文章对你有用,请随意打赏</span></p>
+		
+ 
+	</div>
+	<div class="zs-modal-body">
+		<div class="zs-modal-btns">
+			<button class="btn btn-blink" data-num="2">2元</button>
+			<button class="btn btn-blink" data-num="5">5元</button>
+			<button class="btn btn-blink" data-num="10">10元</button>
+			<button class="btn btn-blink" data-num="50">50元</button>
+			<button class="btn btn-blink" data-num="100">100元</button>
+			<button class="btn btn-blink" data-num="1">任意金额</button>
+		</div>
+		<div class="zs-modal-pay">
+			<button class="btn btn-bred" id="pay-text">2元</button>
+			<p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+			<img src="/img/reward/wechat-2.png"  id="pay-image"/>
+		</div>
+	</div>
+	<div class="zs-modal-footer">
+		<label><input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked"><span ><span class="zs-wechat"><img src="/img/reward/wechat-btn.png"/></span></label>
+		<label><input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay"><img src="/img/reward/alipay-btn.png"/></span></label>
+	</div>
+</div>
+<script type="text/javascript" src="/js/reward.js"></script>
+
+                
+
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="2019-09-08-MapWinGIS%20Loading%20tif/shapefile%20Based%20on%20MFC" data-toggle="tooltip" data-placement="top" title="基于MFC的MapWinGIS加载tif/shapefile文件">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+
+                
+<div id="disqus-comment"></div>
+
+
+
+            </div>
+            
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        <a href="/tags/microservice" title="Microservice">
+                            Microservice
+                        </a>
+                        
+                        
+                        
+                        <a href="/tags/security" title="Security">
+                            Security
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+                <section>
+                    <hr>
+                    <h5>FRIENDS</h5>
+                    <ul class="list-inline">
+                        
+                        <li><a target="_blank" href="http://blog.sciencenet.cn/u/chaoshu">chaoshu博客</a></li>
+                        
+                    </ul>
+                </section>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                   
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="Geovey Space" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fa fa-circle fa-stack-2x"></i>
+                               <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+                   
+                    
+                    <li>
+                        <a href="mailto:cugchenchao@163.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+                    
+                    
+                    
+                    
+
+                    
+
+		    
+                    
+                    <li>
+                        <a target="_blank" href="/your%20wechat%20qr%20code%20image">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-wechat fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/yourgithub">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+                    
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/yourlinkedinid">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://stackoverflow.com/users/yourstackoverflowid">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+            
+                    
+                    
+                    
+                </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Geovey Space 2019
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    async("https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+</body>
+</html>

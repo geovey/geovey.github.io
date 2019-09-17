@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Geovey Space</title>
+    <link>http://geovey.github.io/</link>
+    <description>Recent content on Geovey Space</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Mon, 16 Sep 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://geovey.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>MapWinGIS增加鼠标对外接口</title>
+      <link>http://geovey.github.io/2019-09-16-mapwingis-adding-mouse-external-interface/</link>
+      <pubDate>Mon, 16 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://geovey.github.io/2019-09-16-mapwingis-adding-mouse-external-interface/</guid>
+      <description>MapWinGIS自带的控件只有MouseDown、MouseUp和MouseMove三个鼠标对外事件，本文讲解如何增加鼠标滚轮对外事件接口</description>
+    </item>
+    
+    <item>
+      <title>基于MFC的MapWinGIS加载tif/shapefile文件</title>
+      <link>http://geovey.github.io/2019-09-08-mapwingis-loading-tif/shapefile-based-on-mfc/</link>
+      <pubDate>Sun, 08 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://geovey.github.io/2019-09-08-mapwingis-loading-tif/shapefile-based-on-mfc/</guid>
+      <description>1、tif文件加载 cc_map.RemoveAllLayers(); CString filename = &amp;quot;C:\\Users\\cugch\\Documents\\DOM\\Google2019.tif&amp;quot;; //图层数据 mapWindow::IImagePtr sf; sf.CreateInstance(__uuidof(mapWindow::Image)); sf-&amp;gt;Open(_bstr_t(filename), mapWindow::USE_FILE_EXTENSION, TRUE, NULL); long handle = cc_map.AddLayer(sf, TRUE); Invalidate(); 2、shapefile文件加载 CString filename = &amp;quot;C:\\Users\\cu</description>
+    </item>
+    
+    <item>
+      <title>MapWinGIS实现GCJ02火星坐标转换</title>
+      <link>http://geovey.github.io/2019-08-31-mapwingis-implementation-of-mars-coordinate-conversion-in-gcj02/</link>
+      <pubDate>Sat, 31 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://geovey.github.io/2019-08-31-mapwingis-implementation-of-mars-coordinate-conversion-in-gcj02/</guid>
+      <description>+++ 问题：我国公开使用的在线地图都是加偏（火星坐标GCJ02）的，所以想要正确显示矢量shapefile数据，就必须进行加偏显示，如何在Map</description>
+    </item>
+    
+    <item>
+      <title>MFC对话框项目调试MapWinGIS</title>
+      <link>http://geovey.github.io/2019-08-20-mfc-dialogue-project-debugging-mapwingis/</link>
+      <pubDate>Tue, 20 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://geovey.github.io/2019-08-20-mfc-dialogue-project-debugging-mapwingis/</guid>
+      <description>本文介绍如果在MFC环境下调试调用MapWinGIS 一、在MapWinGIS同一个解决方案下面新建一个MFC调式程序 右键解决方案&amp;ndash</description>
+    </item>
+    
+    <item>
+      <title>MapWinGIS增加高德地图</title>
+      <link>http://geovey.github.io/2019-08-06-mapwingis-increases-gaode-map/</link>
+      <pubDate>Tue, 06 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>http://geovey.github.io/2019-08-06-mapwingis-increases-gaode-map/</guid>
+      <description>MapWinGIS自带的地图中不包含高德地图，可以通过手动添加高德地图的URL方式实现加载高德地图，具体实现方法如下： 1、在项目筛选器Til</description>
+    </item>
+    
+  </channel>
+</rss>
